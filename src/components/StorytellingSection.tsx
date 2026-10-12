@@ -194,6 +194,16 @@ const StorytellingSection = () => {
                   <p className={`text-lg md:text-xl font-normal leading-relaxed max-w-lg ${isActive ? "text-foreground/90" : "text-foreground/20"}`}>
                     {chapter.description}
                   </p>
+
+                  {/* Mobile image: the pinned image panel below is intentionally desktop-only. */}
+                  <div className="md:hidden mt-8 w-full overflow-hidden rounded-2xl border border-foreground/10 bg-foreground/[0.03] shadow-xl">
+                    <img
+                      src={chapter.image}
+                      alt={chapter.title}
+                      loading="eager"
+                      className={`w-full h-56 ${chapter.imgClass}`}
+                    />
+                  </div>
                 </div>
               </div>
             );
