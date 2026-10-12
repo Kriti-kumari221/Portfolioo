@@ -1,0 +1,182 @@
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Menu, X, Sparkles, Zap } from "lucide-react";
+
+const navItems = [
+  { label: "Journey", href: "#about" },
+  { label: "Skills", href: "#skills" },
+  { label: "Projects", href: "#projects" },
+  { label: "Certificates", href: "#certificates" },
+  { label: "Intelligence", href: "#code-footprint" },
+  { label: "Resume", href: "#resume" },
+  { label: "Contact", href: "#contact" },
+];
+
+const Navbar = () => {
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>("");
+  const [theme, setTheme] = useState<"classic" | "quantum">(() => {
+    try {
+      return localStorage.getItem("portfolio-theme") === "quantum" ? "quantum" : "classic";
+    } catch {
+      return "classic";
+    }
+  });
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 100);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Highlight the nav item for the section currently in view
+  useEffect(() => {
+    const targets = navItems
+      .map((item) => document.querySelector(item.href))
+      .filter((el): el is Element => el !== null);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActiveSection(`#${entry.target.id}`);
+        });
+      },
+      { rootMargin: "-45% 0px -50% 0px" }
+    );
+    targets.forEach((t) => observer.observe(t));
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (theme === "quantum") {
+      document.documentElement.setAttribute("data-theme", "quantum");
+    } else {
+      document.documentElement.removeAttribute("data-theme");
+    }
+    try {
+      localStorage.setItem("portfolio-theme", theme);
+    } catch {
+      /* storage unavailable (private mode) — theme just won't persist */
+    }
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === "classic" ? "quantum" : "classic");
+  };
+
+  return (
+    <motion.nav
+      initial={{ y: -80 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled
+          ? "bg-background/85 backdrop-blur-xl border-b border-foreground/[0.06] shadow-[0_4px_30px_rgba(0,0,0,0.08)] py-4"
+          : "bg-transparent py-6"
+        }`}
+    >
+      <div className="max-w-[1400px] mx-auto px-6 md:px-12 flex items-center justify-between">
+        <a
+          href="#hero"
+          aria-label="Kriti Kumari — back to top"
+          className={`text-2xl font-black tracking-tighter uppercase transition-all duration-500 ${
+            scrolled
+              ? "bg-clip-text text-transparent"
+              : "text-white"
+          }`}
+          style={scrolled ? {
+            backgroundImage: "linear-gradient(135deg, hsl(var(--foreground)) 0%, hsl(var(--foreground)/0.5) 50%, hsl(var(--foreground)) 100%)",
+            backgroundSize: "200% 100%",
+          } : {}}
+        >
+          Kriti
+        </a>
+
+        <div className="hidden md:flex items-center gap-10">
+          {navItems.map((item) => (
+            <a
+              key={item.href}
+              href={item.href}
+              className={`text-[11px] font-mono uppercase tracking-[0.3em] font-bold transition-all duration-500 relative group ${scrolled ? (activeSection === item.href ? "text-foreground" : "text-foreground/60 hover:text-foreground") : (activeSection === item.href ? "text-white" : "text-white/60 hover:text-white")}`}
+              aria-current={activeSection === item.href ? "true" : undefined}
+            >
+              {item.label}
+              <span className={`absolute -bottom-1.5 left-0 h-[1.5px] rounded-full transition-all duration-300 group-hover:w-full ${activeSection === item.href ? "w-full" : "w-0"} ${
+                scrolled
+                  ? "bg-gradient-to-r from-foreground to-foreground/40"
+                  : "bg-gradient-to-r from-white to-white/40"
+              }`} />
+            </a>
+          ))}
+
+          {/* Theme Toggle Button */}
+          <button
+            onClick={toggleTheme}
+            className={`p-3 rounded-2xl border transition-all duration-500 flex items-center gap-2 group hover:scale-105 ${scrolled
+                ? "border-foreground/10 bg-foreground/5 text-foreground"
+                : "border-white/10 bg-white/5 text-white"
+              }`}
+            title="Switch Theme"
+            aria-label={`Switch to ${theme === "classic" ? "quantum" : "classic"} theme`}
+          >
+            {theme === "classic" ? (
+              <Sparkles size={16} className="text-orange-500 group-hover:rotate-12 transition-transform" />
+            ) : (
+              <Zap size={16} className="text-cyan-400 group-hover:scale-110 transition-transform" />
+            )}
+            <span className="text-[10px] font-mono font-bold uppercase tracking-widest hidden lg:block">
+              {theme === "classic" ? "Classic" : "Quantum"}
+            </span>
+          </button>
+        </div>
+
+        <button
+          onClick={() => setMobileOpen(!mobileOpen)}
+          aria-label={mobileOpen ? "Close menu" : "Open menu"}
+          aria-expanded={mobileOpen}
+          className={`md:hidden transition-colors duration-500 ${scrolled ? "text-foreground" : "text-white"}`}
+        >
+          {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+      </div>
+
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden bg-background border-t border-border overflow-hidden"
+          >
+            <div className="px-6 py-8 flex flex-col items-center space-y-6">
+              {navItems.map((item) => (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMobileOpen(false)}
+                  className="block text-[11px] font-mono uppercase tracking-[0.3em] font-bold text-foreground/70 hover:text-foreground transition-colors py-2"
+                >
+                  {item.label}
+                </a>
+              ))}
+
+              <button
+                onClick={() => {
+                  toggleTheme();
+                  setMobileOpen(false);
+                }}
+                className="flex items-center gap-3 px-6 py-3 rounded-2xl bg-foreground/5 border border-foreground/10 text-[11px] font-mono font-bold uppercase tracking-widest text-foreground"
+              >
+                {theme === "classic" ? <Sparkles size={14} /> : <Zap size={14} />}
+                Theme: {theme}
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.nav>
+  );
+};
+
+export default Navbar;

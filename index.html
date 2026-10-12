@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kriti Kumari | AI & ML Developer Portfolio</title>
+    <meta name="description" content="Portfolio of Kriti Kumari — AI & Machine Learning Developer building intelligent systems that solve real-world problems." />
+    <meta name="author" content="Kriti Kumari" />
+    <meta name="theme-color" content="#120f0e" />
+
+    <meta property="og:title" content="Kriti Kumari | AI & ML Developer" />
+    <meta property="og:description" content="Building intelligent systems that solve real-world problems using Artificial Intelligence." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/hackthon.png" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Kriti Kumari | AI & ML Developer" />
+    <meta name="twitter:description" content="Building intelligent systems that solve real-world problems using Artificial Intelligence." />
+    <meta name="twitter:image" content="/hackthon.png" />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Fonts (loaded here instead of CSS @import so they don't block rendering) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Apply saved theme before first paint to avoid a light/dark flash -->
+    <script>
+      try {
+        if (localStorage.getItem("portfolio-theme") === "quantum") {
+          document.documentElement.setAttribute("data-theme", "quantum");
+        }
+      } catch (e) {}
+    </script>
+  </head>
+
+  <body>
+    <noscript>This portfolio needs JavaScript enabled to run.</noscript>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
